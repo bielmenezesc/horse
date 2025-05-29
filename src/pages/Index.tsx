@@ -106,20 +106,25 @@ const AppSidebar = () => {
     <Sidebar className="border-r border-gray-800">
       <SidebarContent className="bg-gray-900">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-lg font-bold text-white mb-6 px-4">
-            AI Insights Dashboard
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
+          <div className="px-4 py-6 border-b border-gray-800">
+            <img 
+              src="/lovable-uploads/74fe763e-1084-41fb-98c5-4119c49496f0.png" 
+              alt="ALIACODE"
+              className="h-8 w-auto mb-2"
+            />
+            <p className="text-sm text-gray-400">AI Insights Dashboard</p>
+          </div>
+          <SidebarGroupContent className="mt-4">
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild 
-                    className={`${item.active ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'} transition-colors duration-200`}
+                    className={`${item.active ? 'bg-white text-gray-900' : 'text-gray-400 hover:text-white hover:bg-gray-800'} transition-colors duration-200`}
                   >
                     <a href="#" className="flex items-center space-x-3 px-4 py-3">
                       <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
+                      <span className="font-medium">{item.title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -133,14 +138,14 @@ const AppSidebar = () => {
 };
 
 const KPICard = ({ title, value, change, icon: Icon, trend }) => (
-  <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors duration-200">
+  <Card className="bg-gray-900 border-gray-800 hover:bg-gray-850 transition-colors duration-200">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium text-gray-300">{title}</CardTitle>
       <Icon className="h-4 w-4 text-gray-400" />
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold text-white">{value}</div>
-      <p className={`text-xs ${trend === 'up' ? 'text-green-400' : 'text-red-400'} flex items-center mt-1`}>
+      <div className="text-2xl font-bold text-white tracking-tight">{value}</div>
+      <p className={`text-xs ${trend === 'up' ? 'text-green-400' : 'text-red-400'} flex items-center mt-1 font-medium`}>
         {trend === 'up' ? <ArrowUp className="h-3 w-3 mr-1" /> : <ArrowDown className="h-3 w-3 mr-1" />}
         {change}
       </p>
@@ -159,7 +164,7 @@ const Index = () => {
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-3xl font-bold text-white">Dashboard Overview</h1>
+                  <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard Overview</h1>
                   <p className="text-gray-400 mt-1">AI Customer Service Performance Metrics</p>
                 </div>
                 <SidebarTrigger className="text-white hover:bg-gray-800" />
@@ -200,9 +205,9 @@ const Index = () => {
               {/* Charts Section */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Daily Interactions Chart */}
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-gray-900 border-gray-800">
                   <CardHeader>
-                    <CardTitle className="text-white">Daily Interactions</CardTitle>
+                    <CardTitle className="text-white font-semibold tracking-tight">Daily Interactions</CardTitle>
                     <CardDescription className="text-gray-400">
                       Number of users who reached the chatbot over the past 30 days
                     </CardDescription>
@@ -211,23 +216,24 @@ const Index = () => {
                     <ResponsiveContainer width="100%" height={300}>
                       <LineChart data={dailyInteractionsData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="date" stroke="#9CA3AF" />
-                        <YAxis stroke="#9CA3AF" />
+                        <XAxis dataKey="date" stroke="#9CA3AF" className="text-xs" />
+                        <YAxis stroke="#9CA3AF" className="text-xs" />
                         <Tooltip 
                           contentStyle={{ 
-                            backgroundColor: '#1F2937', 
+                            backgroundColor: '#111827', 
                             border: '1px solid #374151',
                             borderRadius: '8px',
-                            color: '#fff'
+                            color: '#fff',
+                            fontSize: '12px'
                           }} 
                         />
                         <Line 
                           type="monotone" 
                           dataKey="interactions" 
-                          stroke="#3B82F6" 
+                          stroke="#FFFFFF" 
                           strokeWidth={2}
-                          dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-                          activeDot={{ r: 6, stroke: '#3B82F6', strokeWidth: 2 }}
+                          dot={{ fill: '#FFFFFF', strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, stroke: '#FFFFFF', strokeWidth: 2 }}
                         />
                       </LineChart>
                     </ResponsiveContainer>
@@ -235,9 +241,9 @@ const Index = () => {
                 </Card>
 
                 {/* Daily Revenue Chart */}
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-gray-900 border-gray-800">
                   <CardHeader>
-                    <CardTitle className="text-white">Daily Revenue</CardTitle>
+                    <CardTitle className="text-white font-semibold tracking-tight">Daily Revenue</CardTitle>
                     <CardDescription className="text-gray-400">
                       Revenue attributed to the automation system by day
                     </CardDescription>
@@ -246,24 +252,25 @@ const Index = () => {
                     <ResponsiveContainer width="100%" height={300}>
                       <LineChart data={dailyRevenueData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="date" stroke="#9CA3AF" />
-                        <YAxis stroke="#9CA3AF" />
+                        <XAxis dataKey="date" stroke="#9CA3AF" className="text-xs" />
+                        <YAxis stroke="#9CA3AF" className="text-xs" />
                         <Tooltip 
                           contentStyle={{ 
-                            backgroundColor: '#1F2937', 
+                            backgroundColor: '#111827', 
                             border: '1px solid #374151',
                             borderRadius: '8px',
-                            color: '#fff'
+                            color: '#fff',
+                            fontSize: '12px'
                           }} 
                           formatter={(value) => [`$${value}`, 'Revenue']}
                         />
                         <Line 
                           type="monotone" 
                           dataKey="revenue" 
-                          stroke="#14B8A6" 
+                          stroke="#10B981" 
                           strokeWidth={2}
-                          dot={{ fill: '#14B8A6', strokeWidth: 2, r: 4 }}
-                          activeDot={{ r: 6, stroke: '#14B8A6', strokeWidth: 2 }}
+                          dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2 }}
                         />
                       </LineChart>
                     </ResponsiveContainer>
@@ -274,9 +281,9 @@ const Index = () => {
               {/* Funnel and Insights */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Customer Support Funnel */}
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-gray-900 border-gray-800">
                   <CardHeader>
-                    <CardTitle className="text-white">Customer Support Funnel</CardTitle>
+                    <CardTitle className="text-white font-semibold tracking-tight">Customer Support Funnel</CardTitle>
                     <CardDescription className="text-gray-400">
                       User journey through the support process
                     </CardDescription>
@@ -290,23 +297,23 @@ const Index = () => {
                         return (
                           <div key={stage.name} className="space-y-2">
                             <div className="flex justify-between items-center text-sm">
-                              <span className="text-gray-300">{stage.name}</span>
+                              <span className="text-gray-300 font-medium">{stage.name}</span>
                               <div className="text-right">
                                 <span className="text-white font-semibold">{stage.value.toLocaleString()}</span>
                                 <span className="text-gray-400 ml-2">({percentage.toFixed(1)}%)</span>
                               </div>
                             </div>
-                            <div className="w-full bg-gray-700 rounded-full h-2">
+                            <div className="w-full bg-gray-800 rounded-full h-2">
                               <div 
                                 className="h-2 rounded-full transition-all duration-300" 
                                 style={{ 
                                   width: `${percentage}%`, 
-                                  backgroundColor: stage.fill 
+                                  backgroundColor: index === funnelData.length - 1 ? '#EF4444' : '#FFFFFF'
                                 }}
                               />
                             </div>
                             {index > 0 && (
-                              <div className="text-xs text-red-400">
+                              <div className="text-xs text-red-400 font-medium">
                                 {dropoffRate.toFixed(1)}% drop-off rate
                               </div>
                             )}
@@ -318,9 +325,9 @@ const Index = () => {
                 </Card>
 
                 {/* User Behavior Insights */}
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-gray-900 border-gray-800">
                   <CardHeader>
-                    <CardTitle className="text-white">User Behavior Insights</CardTitle>
+                    <CardTitle className="text-white font-semibold tracking-tight">User Behavior Insights</CardTitle>
                     <CardDescription className="text-gray-400">
                       Most common questions and user patterns
                     </CardDescription>
@@ -332,28 +339,29 @@ const Index = () => {
                         <ResponsiveContainer width="100%" height={200}>
                           <RechartsBarChart data={commonQuestionsData} layout="horizontal">
                             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                            <XAxis type="number" stroke="#9CA3AF" />
-                            <YAxis dataKey="question" type="category" stroke="#9CA3AF" width={100} />
+                            <XAxis type="number" stroke="#9CA3AF" className="text-xs" />
+                            <YAxis dataKey="question" type="category" stroke="#9CA3AF" width={100} className="text-xs" />
                             <Tooltip 
                               contentStyle={{ 
-                                backgroundColor: '#1F2937', 
+                                backgroundColor: '#111827', 
                                 border: '1px solid #374151',
                                 borderRadius: '8px',
-                                color: '#fff'
+                                color: '#fff',
+                                fontSize: '12px'
                               }} 
                             />
-                            <Bar dataKey="count" fill="#3B82F6" />
+                            <Bar dataKey="count" fill="#FFFFFF" />
                           </RechartsBarChart>
                         </ResponsiveContainer>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-700">
+                      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-800">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-white">14%</div>
+                          <div className="text-2xl font-bold text-white tracking-tight">14%</div>
                           <div className="text-xs text-gray-400">Need Human Intervention</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-white">23%</div>
+                          <div className="text-2xl font-bold text-white tracking-tight">23%</div>
                           <div className="text-xs text-gray-400">Drop-off Rate</div>
                         </div>
                       </div>
@@ -363,33 +371,33 @@ const Index = () => {
               </div>
 
               {/* Additional Metrics */}
-              <Card className="bg-gray-800 border-gray-700">
+              <Card className="bg-gray-900 border-gray-800">
                 <CardHeader>
-                  <CardTitle className="text-white">Performance Summary</CardTitle>
+                  <CardTitle className="text-white font-semibold tracking-tight">Performance Summary</CardTitle>
                   <CardDescription className="text-gray-400">
                     Key performance indicators for the current month
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="text-center p-4 bg-gray-750 rounded-lg">
-                      <div className="text-3xl font-bold text-blue-400">86%</div>
+                    <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
+                      <div className="text-3xl font-bold text-white tracking-tight">86%</div>
                       <div className="text-sm text-gray-400 mt-1">Resolution Rate</div>
-                      <div className="text-xs text-green-400 mt-1">+5.2% from last month</div>
+                      <div className="text-xs text-green-400 mt-1 font-medium">+5.2% from last month</div>
                     </div>
-                    <div className="text-center p-4 bg-gray-750 rounded-lg">
-                      <div className="text-3xl font-bold text-teal-400">2.3m</div>
+                    <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
+                      <div className="text-3xl font-bold text-white tracking-tight">2.3m</div>
                       <div className="text-sm text-gray-400 mt-1">Messages Processed</div>
-                      <div className="text-xs text-green-400 mt-1">+18.4% from last month</div>
+                      <div className="text-xs text-green-400 mt-1 font-medium">+18.4% from last month</div>
                     </div>
-                    <div className="text-center p-4 bg-gray-750 rounded-lg">
-                      <div className="text-3xl font-bold text-purple-400">$127K</div>
+                    <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
+                      <div className="text-3xl font-bold text-white tracking-tight">$127K</div>
                       <div className="text-sm text-gray-400 mt-1">Cost Savings</div>
-                      <div className="text-xs text-green-400 mt-1">+22.1% from last month</div>
+                      <div className="text-xs text-green-400 mt-1 font-medium">+22.1% from last month</div>
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </div>
             </div>
           </main>
         </div>
