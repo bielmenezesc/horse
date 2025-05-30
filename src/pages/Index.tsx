@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, MessageSquare, ChartLine, ArrowUp, ArrowDown, Loader2 } from "lucide-react";
@@ -47,15 +46,17 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="max-w-7xl mx-auto p-8 space-y-8">
-        {/* Header with Logo */}
-        <div className="text-center py-8">
+        {/* Header with Logo and Text */}
+        <div className="flex items-center space-x-8 py-8">
           <img 
-            src="/lovable-uploads/5432fca3-8b1f-443a-a7db-a6b24e28a19c.png" 
-            alt="ALIACODE"
-            className="w-[30vw] h-auto mx-auto mb-6"
+            src="/lovable-uploads/3145b3b9-1486-44fc-9a8b-b1582dbea4ea.png" 
+            alt="Horse Logo"
+            className="w-[30vw] h-auto"
           />
-          <h1 className="text-4xl font-bold text-white tracking-tight mb-2">Dashboard Overview</h1>
-          <p className="text-white/60 text-lg">AI Customer Service Performance Metrics</p>
+          <div>
+            <h1 className="text-4xl font-bold text-white tracking-tight mb-2">Bem vindo, equipe Horse!</h1>
+            <p className="text-white/60 text-lg">Métricas de Desempenho do Atendimento ao Cliente com IA</p>
+          </div>
         </div>
 
         {/* KPI Cards */}
