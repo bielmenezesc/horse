@@ -35,13 +35,22 @@ const Index = () => {
   const { data: dailyInteractions, isLoading: interactionsLoading } = useDailyInteractions();
   const { data: dailyRevenue, isLoading: revenueLoading } = useDailyRevenue();
 
+  // Mock data for the funnel based on the image
+  const funnelData = [
+    { stage: "Initial Contact", count: 1000, percentage: 100, dropRate: null },
+    { stage: "Question Asked", count: 850, percentage: 85.0, dropRate: 15.0 },
+    { stage: "Response Provided", count: 720, percentage: 72.0, dropRate: 15.3 },
+    { stage: "Issue Resolved", count: 580, percentage: 58.0, dropRate: 19.4 },
+    { stage: "Handover to Human", count: 140, percentage: 14.0, dropRate: 75.9 }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="max-w-7xl mx-auto p-8 space-y-8">
         {/* Header with Logo */}
         <div className="text-center py-8">
           <img 
-            src="/lovable-uploads/fc144359-b373-4772-b2c3-0904d7341787.png" 
+            src="/lovable-uploads/5432fca3-8b1f-443a-a7db-a6b24e28a19c.png" 
             alt="ALIACODE"
             className="w-[30vw] h-auto mx-auto mb-6"
           />
@@ -182,45 +191,29 @@ const Index = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {statsLoading ? (
-              <div className="flex items-center justify-center h-[300px]">
-                <Loader2 className="h-8 w-8 animate-spin text-white/60" />
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="text-center p-6 bg-white/5 rounded-lg border border-white/10">
-                    <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.totalUsers || 0}</div>
-                    <div className="text-sm text-white/60 mt-2">Initial Contact</div>
-                    <div className="text-xs text-blue-400 mt-1 font-medium">Users reached out</div>
+            <div className="space-y-6">
+              {funnelData.map((item, index) => (
+                <div key={item.stage} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white font-medium">{item.stage}</span>
+                    <span className="text-white/80">
+                      {item.count} ({item.percentage}%)
+                    </span>
                   </div>
-                  <div className="text-center p-6 bg-white/5 rounded-lg border border-white/10">
-                    <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.currentlyTalking || 0}</div>
-                    <div className="text-sm text-white/60 mt-2">Active Conversations</div>
-                    <div className="text-xs text-yellow-400 mt-1 font-medium">Currently engaged</div>
+                  <div className="w-full bg-gray-700 rounded-full h-3">
+                    <div
+                      className="bg-white h-3 rounded-full transition-all duration-500"
+                      style={{ width: `${item.percentage}%` }}
+                    ></div>
                   </div>
-                  <div className="text-center p-6 bg-white/5 rounded-lg border border-white/10">
-                    <div className="text-3xl font-bold text-white tracking-tight">{Math.round((customerStats?.conversions || 0) * 1.5)}</div>
-                    <div className="text-sm text-white/60 mt-2">Qualified Leads</div>
-                    <div className="text-xs text-orange-400 mt-1 font-medium">Showed interest</div>
-                  </div>
-                  <div className="text-center p-6 bg-white/5 rounded-lg border border-white/10">
-                    <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.conversions || 0}</div>
-                    <div className="text-sm text-white/60 mt-2">Conversions</div>
-                    <div className="text-xs text-green-400 mt-1 font-medium">Successfully converted</div>
-                  </div>
+                  {item.dropRate && (
+                    <div className="text-red-400 text-sm font-medium">
+                      {item.dropRate}% drop-off rate
+                    </div>
+                  )}
                 </div>
-                
-                <div className="text-center pt-4 border-t border-white/10">
-                  <div className="text-lg text-white/80">
-                    Conversion Rate: <span className="text-green-400 font-bold">{customerStats?.conversionRate}%</span>
-                  </div>
-                  <div className="text-sm text-white/60 mt-1">
-                    Average {customerStats?.avgMessages} messages per conversation
-                  </div>
-                </div>
-              </div>
-            )}
+              ))}
+            </div>
           </CardContent>
         </Card>
 
