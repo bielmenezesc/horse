@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, MessageSquare, ChartLine, ArrowUp, ArrowDown, Loader2 } from "lucide-react";
@@ -14,7 +15,7 @@ const KPICard = ({ title, value, change, icon: Icon, trend, isLoading = false })
       {isLoading ? (
         <div className="flex items-center space-x-2">
           <Loader2 className="h-4 w-4 animate-spin" />
-          <div className="text-sm text-white/60">Loading...</div>
+          <div className="text-sm text-white/60">Carregando...</div>
         </div>
       ) : (
         <>
@@ -34,26 +35,28 @@ const Index = () => {
   const { data: dailyInteractions, isLoading: interactionsLoading } = useDailyInteractions();
   const { data: dailyRevenue, isLoading: revenueLoading } = useDailyRevenue();
 
-  // Mock data for the funnel based on the image
+  // Updated funnel data with Brazilian Portuguese stages
   const funnelData = [
-    { stage: "Initial Contact", count: 1000, percentage: 100, dropRate: null },
-    { stage: "Question Asked", count: 850, percentage: 85.0, dropRate: 15.0 },
-    { stage: "Response Provided", count: 720, percentage: 72.0, dropRate: 15.3 },
-    { stage: "Issue Resolved", count: 580, percentage: 58.0, dropRate: 19.4 },
-    { stage: "Handover to Human", count: 140, percentage: 14.0, dropRate: 75.9 }
+    { stage: "Contato Inicial", count: 1000, percentage: 100, dropRate: null },
+    { stage: "Apresentação do Produto", count: 850, percentage: 85.0, dropRate: 15.0 },
+    { stage: "Validação de Dores e Culpas", count: 720, percentage: 72.0, dropRate: 15.3 },
+    { stage: "Pitch", count: 580, percentage: 58.0, dropRate: 19.4 },
+    { stage: "Quebra de Objeções", count: 140, percentage: 14.0, dropRate: 75.9 }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="max-w-7xl mx-auto p-8 space-y-8">
-        {/* Header with Logo and Text */}
-        <div className="flex items-center space-x-8 py-8">
-          <img 
-            src="/lovable-uploads/3145b3b9-1486-44fc-9a8b-b1582dbea4ea.png" 
-            alt="Horse Logo"
-            className="w-[30vw] h-auto"
-          />
-          <div>
+        {/* Header with Centered Logo and Left-aligned Text */}
+        <div className="py-8">
+          <div className="text-center mb-6">
+            <img 
+              src="/lovable-uploads/3145b3b9-1486-44fc-9a8b-b1582dbea4ea.png" 
+              alt="Horse Logo"
+              className="w-[30vw] h-auto mx-auto"
+            />
+          </div>
+          <div className="text-left">
             <h1 className="text-4xl font-bold text-white tracking-tight mb-2">Bem vindo, equipe Horse!</h1>
             <p className="text-white/60 text-lg">Métricas de Desempenho do Atendimento ao Cliente com IA</p>
           </div>
@@ -62,33 +65,33 @@ const Index = () => {
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <KPICard
-            title="Total Users"
+            title="Total de Usuários"
             value={customerStats?.totalUsers?.toLocaleString() || "0"}
-            change="Real-time data"
+            change="Dados em tempo real"
             icon={Users}
             trend="up"
             isLoading={statsLoading}
           />
           <KPICard
-            title="Conversion Rate"
+            title="Taxa de Conversão"
             value={`${customerStats?.conversionRate || "0"}%`}
-            change={`${customerStats?.conversions || 0} conversions`}
+            change={`${customerStats?.conversions || 0} conversões`}
             icon={ChartLine}
             trend="up"
             isLoading={statsLoading}
           />
           <KPICard
-            title="Avg Messages per User"
+            title="Média de Mensagens por Usuário"
             value={customerStats?.avgMessages || "0"}
-            change="Average interaction depth"
+            change="Profundidade média de interação"
             icon={MessageSquare}
             trend="up"
             isLoading={statsLoading}
           />
           <KPICard
-            title="Currently Active"
+            title="Atualmente Ativos"
             value={customerStats?.currentlyTalking?.toString() || "0"}
-            change="Users in conversation"
+            change="Usuários em conversa"
             icon={Users}
             trend="up"
             isLoading={statsLoading}
@@ -100,9 +103,9 @@ const Index = () => {
           {/* Daily Interactions Chart */}
           <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-white font-semibold tracking-tight">Daily Interactions</CardTitle>
+              <CardTitle className="text-white font-semibold tracking-tight">Interações Diárias</CardTitle>
               <CardDescription className="text-white/60">
-                Number of users who contacted the system by day
+                Número de usuários que contataram o sistema por dia
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -142,9 +145,9 @@ const Index = () => {
           {/* Daily Revenue Chart */}
           <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-white font-semibold tracking-tight">Daily Revenue</CardTitle>
+              <CardTitle className="text-white font-semibold tracking-tight">Receita Diária</CardTitle>
               <CardDescription className="text-white/60">
-                Revenue from conversions by day
+                Receita de conversões por dia
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -166,7 +169,7 @@ const Index = () => {
                         color: '#fff',
                         fontSize: '12px'
                       }} 
-                      formatter={(value) => [`$${value}`, 'Revenue']}
+                      formatter={(value) => [`R$${value}`, 'Receita']}
                     />
                     <Line 
                       type="monotone" 
@@ -186,9 +189,9 @@ const Index = () => {
         {/* Customer Support Funnel */}
         <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-white font-semibold tracking-tight">Customer Support Funnel</CardTitle>
+            <CardTitle className="text-white font-semibold tracking-tight">Funil de Atendimento ao Cliente</CardTitle>
             <CardDescription className="text-white/60">
-              User journey through the support process
+              Jornada do usuário através do processo de suporte
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -209,7 +212,7 @@ const Index = () => {
                   </div>
                   {item.dropRate && (
                     <div className="text-red-400 text-sm font-medium">
-                      {item.dropRate}% drop-off rate
+                      {item.dropRate}% taxa de abandono
                     </div>
                   )}
                 </div>
@@ -221,9 +224,9 @@ const Index = () => {
         {/* Performance Summary */}
         <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-white font-semibold tracking-tight">Performance Summary</CardTitle>
+            <CardTitle className="text-white font-semibold tracking-tight">Resumo de Desempenho</CardTitle>
             <CardDescription className="text-white/60">
-              Key performance indicators from your database
+              Principais indicadores de desempenho do seu banco de dados
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -235,18 +238,18 @@ const Index = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
                   <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.conversionRate}%</div>
-                  <div className="text-sm text-white/60 mt-1">Conversion Rate</div>
-                  <div className="text-xs text-green-400 mt-1 font-medium">{customerStats?.conversions} total conversions</div>
+                  <div className="text-sm text-white/60 mt-1">Taxa de Conversão</div>
+                  <div className="text-xs text-green-400 mt-1 font-medium">{customerStats?.conversions} conversões totais</div>
                 </div>
                 <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
                   <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.totalUsers}</div>
-                  <div className="text-sm text-white/60 mt-1">Total Users</div>
-                  <div className="text-xs text-green-400 mt-1 font-medium">In your database</div>
+                  <div className="text-sm text-white/60 mt-1">Total de Usuários</div>
+                  <div className="text-xs text-green-400 mt-1 font-medium">No seu banco de dados</div>
                 </div>
                 <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
                   <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.avgMessages}</div>
-                  <div className="text-sm text-white/60 mt-1">Avg Messages</div>
-                  <div className="text-xs text-green-400 mt-1 font-medium">Per conversation</div>
+                  <div className="text-sm text-white/60 mt-1">Média de Mensagens</div>
+                  <div className="text-xs text-green-400 mt-1 font-medium">Por conversa</div>
                 </div>
               </div>
             )}
