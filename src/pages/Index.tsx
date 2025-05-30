@@ -1,47 +1,13 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { BarChart, Users, MessageSquare, ChevronDown, ChevronUp, CircleArrowDown, CircleArrowUp, ChartLine, CalendarDays, ArrowUp, ArrowDown } from "lucide-react";
+import { BarChart, Users, MessageSquare, ChevronDown, ChevronUp, CircleArrowDown, CircleArrowUp, ChartLine, CalendarDays, ArrowUp, ArrowDown, Loader2 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, FunnelChart, Funnel, Cell, BarChart as RechartsBarChart, Bar } from "recharts";
+import { useHorseData, useHorseStats, useDailyInteractions, useStageAnalysis } from "@/hooks/useHorseData";
 
-// Mock data for daily interactions
-const dailyInteractionsData = [
-  { date: "Day 1", interactions: 245 },
-  { date: "Day 2", interactions: 312 },
-  { date: "Day 3", interactions: 189 },
-  { date: "Day 4", interactions: 401 },
-  { date: "Day 5", interactions: 356 },
-  { date: "Day 6", interactions: 289 },
-  { date: "Day 7", interactions: 445 },
-  { date: "Day 8", interactions: 398 },
-  { date: "Day 9", interactions: 367 },
-  { date: "Day 10", interactions: 423 },
-  { date: "Day 11", interactions: 456 },
-  { date: "Day 12", interactions: 389 },
-  { date: "Day 13", interactions: 501 },
-  { date: "Day 14", interactions: 467 },
-  { date: "Day 15", interactions: 523 },
-  { date: "Day 16", interactions: 434 },
-  { date: "Day 17", interactions: 389 },
-  { date: "Day 18", interactions: 567 },
-  { date: "Day 19", interactions: 489 },
-  { date: "Day 20", interactions: 412 },
-  { date: "Day 21", interactions: 634 },
-  { date: "Day 22", interactions: 578 },
-  { date: "Day 23", interactions: 445 },
-  { date: "Day 24", interactions: 512 },
-  { date: "Day 25", interactions: 589 },
-  { date: "Day 26", interactions: 623 },
-  { date: "Day 27", interactions: 567 },
-  { date: "Day 28", interactions: 698 },
-  { date: "Day 29", interactions: 645 },
-  { date: "Day 30", interactions: 712 }
-];
-
-// Mock data for daily revenue
+// Mock data for daily revenue (keeping this as you didn't mention revenue in your database)
 const dailyRevenueData = [
   { date: "Day 1", revenue: 1250 },
   { date: "Day 2", revenue: 1560 },
@@ -75,22 +41,13 @@ const dailyRevenueData = [
   { date: "Day 30", revenue: 3560 }
 ];
 
-// Mock data for funnel
+// Mock data for funnel (will be calculated from your data later)
 const funnelData = [
   { name: "Initial Contact", value: 1000, fill: "#3B82F6" },
   { name: "Question Asked", value: 850, fill: "#60A5FA" },
   { name: "Response Provided", value: 720, fill: "#93C5FD" },
   { name: "Issue Resolved", value: 580, fill: "#BFDBFE" },
   { name: "Handover to Human", value: 140, fill: "#EF4444" }
-];
-
-// Mock data for common questions
-const commonQuestionsData = [
-  { question: "Password Reset", count: 245 },
-  { question: "Billing Inquiry", count: 189 },
-  { question: "Product Support", count: 167 },
-  { question: "Account Issues", count: 134 },
-  { question: "Technical Problems", count: 98 }
 ];
 
 const AppSidebar = () => {
@@ -137,23 +94,36 @@ const AppSidebar = () => {
   );
 };
 
-const KPICard = ({ title, value, change, icon: Icon, trend }) => (
+const KPICard = ({ title, value, change, icon: Icon, trend, isLoading = false }) => (
   <Card className="bg-gray-900 border-gray-800 hover:bg-gray-850 transition-colors duration-200">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium text-gray-300">{title}</CardTitle>
       <Icon className="h-4 w-4 text-gray-400" />
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold text-white tracking-tight">{value}</div>
-      <p className={`text-xs ${trend === 'up' ? 'text-green-400' : 'text-red-400'} flex items-center mt-1 font-medium`}>
-        {trend === 'up' ? <ArrowUp className="h-3 w-3 mr-1" /> : <ArrowDown className="h-3 w-3 mr-1" />}
-        {change}
-      </p>
+      {isLoading ? (
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <div className="text-sm text-gray-400">Loading...</div>
+        </div>
+      ) : (
+        <>
+          <div className="text-2xl font-bold text-white tracking-tight">{value}</div>
+          <p className={`text-xs ${trend === 'up' ? 'text-green-400' : 'text-red-400'} flex items-center mt-1 font-medium`}>
+            {trend === 'up' ? <ArrowUp className="h-3 w-3 mr-1" /> : <ArrowDown className="h-3 w-3 mr-1" />}
+            {change}
+          </p>
+        </>
+      )}
     </CardContent>
   </Card>
 );
 
 const Index = () => {
+  const { data: horseStats, isLoading: statsLoading } = useHorseStats();
+  const { data: dailyInteractions, isLoading: interactionsLoading } = useDailyInteractions();
+  const { data: stageAnalysis, isLoading: stageLoading } = useStageAnalysis();
+
   return (
     <div className="min-h-screen bg-gray-950">
       <SidebarProvider>
@@ -173,32 +143,36 @@ const Index = () => {
               {/* KPI Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <KPICard
-                  title="Total Users This Month"
-                  value="15,247"
-                  change="+12.5% from last month"
+                  title="Total Users"
+                  value={horseStats?.totalUsers?.toLocaleString() || "0"}
+                  change="Real-time data"
                   icon={Users}
                   trend="up"
+                  isLoading={statsLoading}
                 />
                 <KPICard
                   title="Conversion Rate"
-                  value="68.3%"
-                  change="+2.1% from last month"
+                  value={`${horseStats?.conversionRate || "0"}%`}
+                  change={`${horseStats?.conversions || 0} conversions`}
                   icon={ChartLine}
                   trend="up"
+                  isLoading={statsLoading}
                 />
                 <KPICard
-                  title="Avg Response Time"
-                  value="1.2s"
-                  change="-0.3s from last month"
+                  title="Avg Messages per User"
+                  value={horseStats?.avgMessages || "0"}
+                  change="Average interaction depth"
                   icon={MessageSquare}
                   trend="up"
+                  isLoading={statsLoading}
                 />
                 <KPICard
-                  title="CSAT Score"
-                  value="4.6/5"
-                  change="+0.2 from last month"
+                  title="Currently Active"
+                  value={horseStats?.currentlyTalking?.toString() || "0"}
+                  change="Users in conversation"
                   icon={BarChart}
                   trend="up"
+                  isLoading={statsLoading}
                 />
               </div>
 
@@ -209,38 +183,44 @@ const Index = () => {
                   <CardHeader>
                     <CardTitle className="text-white font-semibold tracking-tight">Daily Interactions</CardTitle>
                     <CardDescription className="text-gray-400">
-                      Number of users who reached the chatbot over the past 30 days
+                      Number of users who contacted the system by day
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={dailyInteractionsData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="date" stroke="#9CA3AF" className="text-xs" />
-                        <YAxis stroke="#9CA3AF" className="text-xs" />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: '#111827', 
-                            border: '1px solid #374151',
-                            borderRadius: '8px',
-                            color: '#fff',
-                            fontSize: '12px'
-                          }} 
-                        />
-                        <Line 
-                          type="monotone" 
-                          dataKey="interactions" 
-                          stroke="#FFFFFF" 
-                          strokeWidth={2}
-                          dot={{ fill: '#FFFFFF', strokeWidth: 2, r: 4 }}
-                          activeDot={{ r: 6, stroke: '#FFFFFF', strokeWidth: 2 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+                    {interactionsLoading ? (
+                      <div className="flex items-center justify-center h-[300px]">
+                        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                      </div>
+                    ) : (
+                      <ResponsiveContainer width="100%" height={300}>
+                        <LineChart data={dailyInteractions}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                          <XAxis dataKey="date" stroke="#9CA3AF" className="text-xs" />
+                          <YAxis stroke="#9CA3AF" className="text-xs" />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#111827', 
+                              border: '1px solid #374151',
+                              borderRadius: '8px',
+                              color: '#fff',
+                              fontSize: '12px'
+                            }} 
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="interactions" 
+                            stroke="#FFFFFF" 
+                            strokeWidth={2}
+                            dot={{ fill: '#FFFFFF', strokeWidth: 2, r: 4 }}
+                            activeDot={{ r: 6, stroke: '#FFFFFF', strokeWidth: 2 }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    )}
                   </CardContent>
                 </Card>
 
-                {/* Daily Revenue Chart */}
+                {/* Daily Revenue Chart (keeping mock data) */}
                 <Card className="bg-gray-900 border-gray-800">
                   <CardHeader>
                     <CardTitle className="text-white font-semibold tracking-tight">Daily Revenue</CardTitle>
@@ -280,7 +260,7 @@ const Index = () => {
 
               {/* Funnel and Insights */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Customer Support Funnel */}
+                {/* Customer Support Funnel (keeping mock data for now) */}
                 <Card className="bg-gray-900 border-gray-800">
                   <CardHeader>
                     <CardTitle className="text-white font-semibold tracking-tight">Customer Support Funnel</CardTitle>
@@ -324,48 +304,58 @@ const Index = () => {
                   </CardContent>
                 </Card>
 
-                {/* User Behavior Insights */}
+                {/* User Stage Analysis */}
                 <Card className="bg-gray-900 border-gray-800">
                   <CardHeader>
-                    <CardTitle className="text-white font-semibold tracking-tight">User Behavior Insights</CardTitle>
+                    <CardTitle className="text-white font-semibold tracking-tight">Stage Analysis</CardTitle>
                     <CardDescription className="text-gray-400">
-                      Most common questions and user patterns
+                      Distribution of users across different stages
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-6">
-                      <div>
-                        <h4 className="text-sm font-semibold text-gray-300 mb-3">Most Common Questions</h4>
-                        <ResponsiveContainer width="100%" height={200}>
-                          <RechartsBarChart data={commonQuestionsData} layout="horizontal">
-                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                            <XAxis type="number" stroke="#9CA3AF" className="text-xs" />
-                            <YAxis dataKey="question" type="category" stroke="#9CA3AF" width={100} className="text-xs" />
-                            <Tooltip 
-                              contentStyle={{ 
-                                backgroundColor: '#111827', 
-                                border: '1px solid #374151',
-                                borderRadius: '8px',
-                                color: '#fff',
-                                fontSize: '12px'
-                              }} 
-                            />
-                            <Bar dataKey="count" fill="#FFFFFF" />
-                          </RechartsBarChart>
-                        </ResponsiveContainer>
+                    {stageLoading ? (
+                      <div className="flex items-center justify-center h-[300px]">
+                        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                       </div>
-                      
-                      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-800">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-white tracking-tight">14%</div>
-                          <div className="text-xs text-gray-400">Need Human Intervention</div>
+                    ) : (
+                      <div className="space-y-6">
+                        <div>
+                          <h4 className="text-sm font-semibold text-gray-300 mb-3">Top Stages</h4>
+                          <ResponsiveContainer width="100%" height={200}>
+                            <RechartsBarChart data={stageAnalysis} layout="horizontal">
+                              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                              <XAxis type="number" stroke="#9CA3AF" className="text-xs" />
+                              <YAxis dataKey="question" type="category" stroke="#9CA3AF" width={100} className="text-xs" />
+                              <Tooltip 
+                                contentStyle={{ 
+                                  backgroundColor: '#111827', 
+                                  border: '1px solid #374151',
+                                  borderRadius: '8px',
+                                  color: '#fff',
+                                  fontSize: '12px'
+                                }} 
+                              />
+                              <Bar dataKey="count" fill="#FFFFFF" />
+                            </RechartsBarChart>
+                          </ResponsiveContainer>
                         </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-white tracking-tight">23%</div>
-                          <div className="text-xs text-gray-400">Drop-off Rate</div>
+                        
+                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-800">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-white tracking-tight">
+                              {horseStats?.currentlyTalking || 0}
+                            </div>
+                            <div className="text-xs text-gray-400">Currently Talking</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-white tracking-tight">
+                              {horseStats?.conversions || 0}
+                            </div>
+                            <div className="text-xs text-gray-400">Total Conversions</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -375,27 +365,33 @@ const Index = () => {
                 <CardHeader>
                   <CardTitle className="text-white font-semibold tracking-tight">Performance Summary</CardTitle>
                   <CardDescription className="text-gray-400">
-                    Key performance indicators for the current month
+                    Key performance indicators from your database
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
-                      <div className="text-3xl font-bold text-white tracking-tight">86%</div>
-                      <div className="text-sm text-gray-400 mt-1">Resolution Rate</div>
-                      <div className="text-xs text-green-400 mt-1 font-medium">+5.2% from last month</div>
+                  {statsLoading ? (
+                    <div className="flex items-center justify-center h-[100px]">
+                      <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
                     </div>
-                    <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
-                      <div className="text-3xl font-bold text-white tracking-tight">2.3m</div>
-                      <div className="text-sm text-gray-400 mt-1">Messages Processed</div>
-                      <div className="text-xs text-green-400 mt-1 font-medium">+18.4% from last month</div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
+                        <div className="text-3xl font-bold text-white tracking-tight">{horseStats?.conversionRate}%</div>
+                        <div className="text-sm text-gray-400 mt-1">Conversion Rate</div>
+                        <div className="text-xs text-green-400 mt-1 font-medium">{horseStats?.conversions} total conversions</div>
+                      </div>
+                      <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
+                        <div className="text-3xl font-bold text-white tracking-tight">{horseStats?.totalUsers}</div>
+                        <div className="text-sm text-gray-400 mt-1">Total Users</div>
+                        <div className="text-xs text-green-400 mt-1 font-medium">In your database</div>
+                      </div>
+                      <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
+                        <div className="text-3xl font-bold text-white tracking-tight">{horseStats?.avgMessages}</div>
+                        <div className="text-sm text-gray-400 mt-1">Avg Messages</div>
+                        <div className="text-xs text-green-400 mt-1 font-medium">Per conversation</div>
+                      </div>
                     </div>
-                    <div className="text-center p-4 bg-gray-850 rounded-lg border border-gray-800">
-                      <div className="text-3xl font-bold text-white tracking-tight">$127K</div>
-                      <div className="text-sm text-gray-400 mt-1">Cost Savings</div>
-                      <div className="text-xs text-green-400 mt-1 font-medium">+22.1% from last month</div>
-                    </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
