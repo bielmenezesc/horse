@@ -81,7 +81,7 @@ const Index = () => {
   const { data: dailyInteractions, isLoading: interactionsLoading } =
     useDailyInteractions();
   const { data: dailyRevenue, isLoading: revenueLoading } = useDailyRevenue();
-  // const { data: funnelData, isLoading: funnelLoading } = useFunnelData();
+  const { data: funnelData, isLoading: funnelLoading } = useFunnelData();
 
   // Updated funnel data with Brazilian Portuguese stages
   // const funnelData = [
@@ -265,7 +265,7 @@ const Index = () => {
         </div>
 
         {/* Customer Support Funnel */}
-        {/* <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-white font-semibold tracking-tight">
               Funil de Atendimento ao Cliente
@@ -275,34 +275,44 @@ const Index = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
-              {funnelData.map((item, index) => (
-                <div key={item.stage} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-white font-medium">{item.stage}</span>
-                    <span className="text-white/80">
-                      {item.count} ({item.percentage}%)
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-700 rounded-full h-3">
-                    <div
-                      className="bg-white h-3 rounded-full transition-all duration-500"
-                      style={{ width: `${item.percentage}%` }}
-                    ></div>
-                  </div>
-                  {item.dropRate && (
-                    <div className="text-red-400 text-sm font-medium">
-                      {item.dropRate}% taxa de abandono
+            {funnelLoading ? (
+              <div className="flex items-center justify-center h-[300px]">
+                <Loader2 className="h-8 w-8 animate-spin text-white/60" />
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {funnelData.map((item, index) => (
+                  <div key={item.stage} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-white font-medium">
+                        {item.stage}
+                      </span>
+                      <span className="text-white/80">
+                        {item.count} ({item.percentage}%)
+                      </span>
                     </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                    <div className="w-full bg-gray-700 rounded-full h-3">
+                      <div
+                        className="bg-white h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${item.percentage}%` }}
+                      ></div>
+                    </div>
+                    {item.dropRate && (
+                      <div className="text-red-400 text-sm font-medium">
+                        {item.dropRate}% taxa de abandono
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
-        </Card> */}
+        </Card>
+
+        <div></div>
 
         {/* Performance Summary */}
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+        {/* <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-white font-semibold tracking-tight">
               Resumo de Desempenho
@@ -354,7 +364,7 @@ const Index = () => {
               </div>
             )}
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

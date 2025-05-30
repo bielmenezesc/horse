@@ -236,12 +236,17 @@ export const useFunnelData = () => {
       // Conta quantos usuários há por estágio
       const stageCounts: Record<string, number> = {};
 
-      for (const item of data) {
-        const stage = item.stage;
-        if (STAGE_ORDER.includes(stage)) {
+      // Garante que data é um array e cada item tem stage como string
+      for (const item of data || []) {
+        const stage = item?.stage;
+
+        if (typeof stage === "string" && STAGE_ORDER.includes(stage)) {
+          console.log("AAAAAAAA");
           stageCounts[stage] = (stageCounts[stage] || 0) + 1;
         }
       }
+
+      console.log("stageCounts: " + stageCounts);
 
       const firstStage = STAGE_ORDER[0];
       const totalFirstStage = stageCounts[firstStage] || 0;
@@ -259,8 +264,13 @@ export const useFunnelData = () => {
           const prevCount = stageCounts[prevStage] || 0;
 
           if (prevCount > 0) {
-            const drop = ((prevCount - count) / prevCount) * 100;
-            dropRate = +drop.toFixed(1);
+            // const drop = ((prevCount - count) / prevCount) * 100;
+            dropRate = parseFloat(
+              (((prevCount - count) / prevCount) * 100).toFixed(1)
+            );
+          }
+          if (count === 0) {
+            dropRate = null;
           }
         }
 
@@ -271,6 +281,8 @@ export const useFunnelData = () => {
           dropRate,
         };
       });
+
+      console.log("funnelData:", JSON.stringify(funnelData, null, 2));
 
       return funnelData;
     },
