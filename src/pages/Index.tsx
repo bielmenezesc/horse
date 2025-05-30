@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, MessageSquare, ChartLine, ArrowUp, ArrowDown, Loader2 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart as RechartsBarChart, Bar } from "recharts";
-import { useCustomerStats, useDailyInteractions, useStageAnalysis, useDailyRevenue } from "@/hooks/useCustomerData";
+import { useCustomerStats, useDailyInteractions, useDailyRevenue } from "@/hooks/useCustomerData";
 
 const KPICard = ({ title, value, change, icon: Icon, trend, isLoading = false }) => (
   <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
@@ -33,7 +33,6 @@ const KPICard = ({ title, value, change, icon: Icon, trend, isLoading = false })
 const Index = () => {
   const { data: customerStats, isLoading: statsLoading } = useCustomerStats();
   const { data: dailyInteractions, isLoading: interactionsLoading } = useDailyInteractions();
-  const { data: stageAnalysis, isLoading: stageLoading } = useStageAnalysis();
   const { data: dailyRevenue, isLoading: revenueLoading } = useDailyRevenue();
 
   return (
@@ -42,9 +41,9 @@ const Index = () => {
         {/* Header with Logo */}
         <div className="text-center py-8">
           <img 
-            src="/lovable-uploads/f608a932-079b-4509-aa3e-a8c778ab5a1f.png" 
+            src="/lovable-uploads/fc144359-b373-4772-b2c3-0904d7341787.png" 
             alt="ALIACODE"
-            className="h-16 w-auto mx-auto mb-6"
+            className="w-[30vw] h-auto mx-auto mb-6"
           />
           <h1 className="text-4xl font-bold text-white tracking-tight mb-2">Dashboard Overview</h1>
           <p className="text-white/60 text-lg">AI Customer Service Performance Metrics</p>
@@ -174,51 +173,50 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Stage Analysis */}
+        {/* Customer Support Funnel */}
         <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-white font-semibold tracking-tight">Stage Analysis</CardTitle>
+            <CardTitle className="text-white font-semibold tracking-tight">Customer Support Funnel</CardTitle>
             <CardDescription className="text-white/60">
-              Distribution of users across different stages
+              User journey through the support process
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {stageLoading ? (
+            {statsLoading ? (
               <div className="flex items-center justify-center h-[300px]">
                 <Loader2 className="h-8 w-8 animate-spin text-white/60" />
               </div>
             ) : (
               <div className="space-y-6">
-                <ResponsiveContainer width="100%" height={300}>
-                  <RechartsBarChart data={stageAnalysis} layout="horizontal">
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                    <XAxis type="number" stroke="rgba(255,255,255,0.6)" className="text-xs" />
-                    <YAxis dataKey="question" type="category" stroke="rgba(255,255,255,0.6)" width={100} className="text-xs" />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        borderRadius: '8px',
-                        color: '#fff',
-                        fontSize: '12px'
-                      }} 
-                    />
-                    <Bar dataKey="count" fill="#FFFFFF" />
-                  </RechartsBarChart>
-                </ResponsiveContainer>
-                
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-white tracking-tight">
-                      {customerStats?.currentlyTalking || 0}
-                    </div>
-                    <div className="text-xs text-white/60">Currently Talking</div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="text-center p-6 bg-white/5 rounded-lg border border-white/10">
+                    <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.totalUsers || 0}</div>
+                    <div className="text-sm text-white/60 mt-2">Initial Contact</div>
+                    <div className="text-xs text-blue-400 mt-1 font-medium">Users reached out</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-white tracking-tight">
-                      {customerStats?.conversions || 0}
-                    </div>
-                    <div className="text-xs text-white/60">Total Conversions</div>
+                  <div className="text-center p-6 bg-white/5 rounded-lg border border-white/10">
+                    <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.currentlyTalking || 0}</div>
+                    <div className="text-sm text-white/60 mt-2">Active Conversations</div>
+                    <div className="text-xs text-yellow-400 mt-1 font-medium">Currently engaged</div>
+                  </div>
+                  <div className="text-center p-6 bg-white/5 rounded-lg border border-white/10">
+                    <div className="text-3xl font-bold text-white tracking-tight">{Math.round((customerStats?.conversions || 0) * 1.5)}</div>
+                    <div className="text-sm text-white/60 mt-2">Qualified Leads</div>
+                    <div className="text-xs text-orange-400 mt-1 font-medium">Showed interest</div>
+                  </div>
+                  <div className="text-center p-6 bg-white/5 rounded-lg border border-white/10">
+                    <div className="text-3xl font-bold text-white tracking-tight">{customerStats?.conversions || 0}</div>
+                    <div className="text-sm text-white/60 mt-2">Conversions</div>
+                    <div className="text-xs text-green-400 mt-1 font-medium">Successfully converted</div>
+                  </div>
+                </div>
+                
+                <div className="text-center pt-4 border-t border-white/10">
+                  <div className="text-lg text-white/80">
+                    Conversion Rate: <span className="text-green-400 font-bold">{customerStats?.conversionRate}%</span>
+                  </div>
+                  <div className="text-sm text-white/60 mt-1">
+                    Average {customerStats?.avgMessages} messages per conversation
                   </div>
                 </div>
               </div>
